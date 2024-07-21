@@ -1,0 +1,16 @@
+{
+  "woodworking": [
+    {
+      "name": "Craftbark Plank",
+      "pixels": 2,
+      "tiersAcquired": { "basic": true, "vip": true, "landowner": true }
+    }
+  ],
+  "cooking": [],
+  "mining": [],
+  "stoneshaping": [],
+  "forestry": [],
+  "farming": [],
+  "petcare": [],
+  "business": []
+}
