@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Tiers = {
   basic: boolean;
@@ -6,23 +6,41 @@ type Tiers = {
   landownder: boolean;
 };
 
-type PixelTask = {
-  name: string;
-  pixels: number;
-  tiersAcquired: Tiers;
-};
-
 type PixelTasks = {
-  [key: string]: PixelTask[];
+  [key: typ.PixelTaskType]: typ.PixelTask[];
 };
 
 export const useFetchPixelTasks = () => {
-  const [pixelTasks, setPixelTasks] = useState<PixelTasks | []>(
-    (localStorage.getItem("pixelTasks") as typeof PixelTask) || [],
-  );
+  const [pixelTasks, setPixelTasks] = useState<PixelTasks | {}>({});
+
+  useEffect(() => {
+    const fetchPixelTasks = async () => {
+      const storedData = await localStorage.getItem("pixelTasks");
+
+      if (storedData) {
+        const parsedData: PixelTasks = JSON.parse(storedData);
+        setPixelTasks(parsedData);
+      }
+    };
+
+    fetchPixelTasks();
+  });
 
   const handleSetPixelTasks = (pixelTasks: PixelTasks) => {
     setPixelTasks(pixelTasks);
+  };
+
+  const handleAddPixelTask = (
+    pixelTask: typ.PixelTask,
+    pixelTaskType: typ.PixelTaskType,
+  ) => {
+    const updatedPixelTasks: PixelTasks = {
+      ...pixelTasks,
+      [pixelTaskType]: [...pixelTasks[pixelTaskType], pixelTask],
+    };
+
+    localStorage.setItem("pixelTasks", updatedPixelTasks);
+    setPixelTasks(updatedPixelTasks);
   };
 
   return { pixelTasks, handleSetPixelTasks };

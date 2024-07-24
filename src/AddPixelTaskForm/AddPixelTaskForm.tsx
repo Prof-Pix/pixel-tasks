@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { pixelIcon } from "../assets/icons.js";
 import TierButton from "../sub-components/TierButton.js";
+import { useFetchPixelTasks } from "../customHooks/useFetchPixelTasks.js";
+import TierButtonContainer from "../components/tierButtons/TierButtonContainer.js";
 
 const craftingTypes: Array<string> = [
   "Woodworking",
@@ -16,6 +18,21 @@ const craftingTypes: Array<string> = [
 const taskTiers: Array<string> = ["Basic", "VIP", "Landowner"];
 
 const AddPixelTaskForm = () => {
+  const { pixelTasks } = useFetchPixelTasks();
+
+  //Form Values
+  const [taskName, setTaskName] = useState("");
+  const [pixelValue, setPixelValue] = useState<number>();
+  const [tiersAcquired, setTiersAcquired] = useState<typ.TiersAcquired>({
+    basic: false,
+    vip: false,
+    landowner: false,
+  });
+
+  const handleChangeTiersAcquired = (tier: typ.TierType, value: number) => {
+    setTiersAcquired({ ...tiersAcquired, [tier]: value });
+  };
+
   return (
     <form
       onSubmit={(e) => {
@@ -28,11 +45,18 @@ const AddPixelTaskForm = () => {
       <label className="mb-1 font-medium">Task Name</label>
       <div className="flex gap-x-2">
         <input
+          value={taskName}
+          onChange={(e) => setTaskName(e.target.value)}
           className="w-[290px] rounded border px-3 py-2 text-sm"
           placeholder="Enter Pixel Task Name"
         />
         <div className="flex items-center rounded border px-3 py-2">
-          <input type="number" className="mr-1 w-[40px] border-b" />
+          <input
+            value={pixelValue}
+            onChange={(e) => setPixelValue(parseFloat(e.target.value))}
+            type="number"
+            className="mr-1 w-[40px] border-b"
+          />
           <div>
             <img className="h-4 w-5" src={pixelIcon} />
           </div>
@@ -48,11 +72,7 @@ const AddPixelTaskForm = () => {
       <div className="h-2" />
 
       <div className="w-[290px]">
-        <div className="flex items-center gap-x-1">
-          {taskTiers.map((tier) => (
-            <TierButton tier={tier} isTierAcquired={false} />
-          ))}
-        </div>
+        <TierButtonContainer tierAcquiredStatus={tiersAcquired} />
       </div>
       <div className="h-4" />
       <div>
